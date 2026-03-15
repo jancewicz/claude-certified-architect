@@ -1,5 +1,10 @@
 from c1_building_with_claude_api.get_client import get_client
-from c1_building_with_claude_api.utils.utils import add_user_message, chat, get_haiku_model, add_assistant_message
+from c1_building_with_claude_api.utils.utils import (
+    add_user_message,
+    chat,
+    get_haiku_model,
+    add_assistant_message,
+)
 
 if __name__ == "__main__":
     messages = []
@@ -26,6 +31,14 @@ if __name__ == "__main__":
            ```
        """
     add_user_message(messages, prompt)
-    add_assistant_message(messages, text='Sure! There are three AWS CLI commands in singular block: ```bash')
-    text = chat(client=get_client(), model=get_haiku_model(), messages=messages, stop_sequences=["```"])
+    add_assistant_message(
+        messages,
+        text="Sure! There are three AWS CLI commands in singular block: ```bash",
+    )
+    text = chat(
+        client=get_client(),
+        model=get_haiku_model(),
+        messages=messages,
+        stop_sequences=["```"],
+    )
     print(text.strip())

@@ -26,7 +26,7 @@ def chat(
 ):
     chat_params = {
         "model": model,
-        "max_tokens": 500,
+        "max_tokens": 1000,
         "messages": messages,
         "temperature": temperature,
         "stop_sequences": stop_sequences,
