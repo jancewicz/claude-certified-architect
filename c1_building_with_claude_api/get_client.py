@@ -6,5 +6,3 @@ load_dotenv()
 
 def get_client() -> Anthropic:
     return Anthropic()
-
-

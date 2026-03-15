@@ -1,7 +1,11 @@
 from anthropic import Anthropic
 
 from c1_building_with_claude_api.get_client import get_client
-from c1_building_with_claude_api.utils.utils import add_user_message, chat, get_haiku_model
+from c1_building_with_claude_api.utils.utils import (
+    add_user_message,
+    chat,
+    get_haiku_model,
+)
 
 if __name__ == "__main__":
     client: Anthropic = get_client()
@@ -11,9 +15,7 @@ if __name__ == "__main__":
     add_user_message(messages=messages, text=user_message)
 
     with client.messages.stream(
-        model=get_haiku_model(),
-        max_tokens=500,
-        messages=messages
+        model=get_haiku_model(), max_tokens=500, messages=messages
     ) as stream:
         for text in stream.text_stream:
             print(text, end="")

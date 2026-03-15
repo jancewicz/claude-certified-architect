@@ -5,6 +5,7 @@ from anthropic.types import MessageParam
 def get_haiku_model() -> str:
     return "claude-haiku-4-5"
 
+
 def add_user_message(messages: list[MessageParam], text: str) -> None:
     user_message: MessageParam = {"role": "user", "content": text}
     messages.append(user_message)
@@ -21,12 +22,14 @@ def chat(
     messages: list[MessageParam],
     system_prompt: str | None = None,
     temperature: float = 0.0,
+    stop_sequences: list[str] = [],
 ):
     chat_params = {
         "model": model,
         "max_tokens": 500,
         "messages": messages,
         "temperature": temperature,
+        "stop_sequences": stop_sequences,
     }
     if system_prompt:
         chat_params["system"] = system_prompt
