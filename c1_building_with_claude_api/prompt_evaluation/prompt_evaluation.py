@@ -2,7 +2,9 @@ import json
 import os.path
 
 from c1_building_with_claude_api.get_client import get_client
-from c1_building_with_claude_api.prompt_evaluation.grader import Grader
+from c1_building_with_claude_api.prompt_evaluation.graders.model_grader import (
+    ModelGrader,
+)
 from c1_building_with_claude_api.prompt_evaluation.graders.code_grader import CodeGrader
 from c1_building_with_claude_api.utils.utils import (
     add_user_message,
@@ -34,20 +36,21 @@ def run_prompt(test_case: dict[str, str]):
     return chat_response
 
 
-def run_test_case(test_case: dict[str, str], grader: Grader) -> dict:
+def run_test_case(test_case: dict[str, str], grader: ModelGrader) -> dict:
     """
     Calls run prompt, then grades the result.
     :param test_case: task to evaluate
     :param grader: task execution grader mechanism
     :return: dictionary with test case output and grading
     """
+    code_grader = CodeGrader()
     chat_response = run_prompt(test_case)
 
     model_grade = grader.grade_by_model(test_case, chat_response)
     model_score = model_grade["score"]
     reasoning = model_grade["reasoning"]
 
-    syntax_score = CodeGrader().grade_syntax(test_case, chat_response)
+    syntax_score = code_grader.grade_syntax(test_case, chat_response)
     score = (model_score + syntax_score) / 2
     return {
         "output": chat_response,
@@ -57,7 +60,7 @@ def run_test_case(test_case: dict[str, str], grader: Grader) -> dict:
     }
 
 
-def run_eval(dataset: dict, grader: Grader) -> list[dict]:
+def run_eval(dataset: dict, grader: ModelGrader) -> list[dict]:
     """
     Run test case for each case from given dataset.
     :param dataset: set of cases to evaluate
@@ -84,10 +87,7 @@ def load_dataset(dataset_path: str):
 if __name__ == "__main__":
     path: str = "test_dataset.json"
     dataset = load_dataset(path)
-    grader = Grader(client, model)
+    model_grader = ModelGrader(client, model)
 
-    eval_results = run_eval(dataset, grader)
-    evaluation_mean_score = grader.calc_mean_scores(eval_results)
-
-    print(eval_results)
-    print(evaluation_mean_score)
+    eval_results = run_eval(dataset, model_grader)
+    evaluation_mean_score = model_grader.calc_mean_scores(eval_results)

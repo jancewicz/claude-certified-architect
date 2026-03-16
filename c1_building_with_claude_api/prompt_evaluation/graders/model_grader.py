@@ -10,7 +10,7 @@ from c1_building_with_claude_api.utils.utils import (
 )
 
 
-class Grader:
+class ModelGrader:
     def __init__(self, client: Anthropic, model: str):
         self.client = client
         self.model = model
