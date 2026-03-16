@@ -3,10 +3,12 @@ import os.path
 
 from c1_building_with_claude_api.get_client import get_client
 from c1_building_with_claude_api.prompt_evaluation.grader import Grader
+from c1_building_with_claude_api.prompt_evaluation.graders.code_grader import CodeGrader
 from c1_building_with_claude_api.utils.utils import (
     add_user_message,
     chat,
     get_haiku_model,
+    add_assistant_message,
 )
 
 
@@ -20,11 +22,15 @@ def run_prompt(test_case: dict[str, str]):
         Solve the following task:
         
         {test_case["task"]}
+        
+        * Return only plain python code, regex, or json
+        * Do not provide any explanation, commentary or comments
     """
 
     messages = []
     add_user_message(messages, prompt)
-    chat_response = chat(client, model, messages)
+    add_assistant_message(messages, text="```code")
+    chat_response = chat(client, model, messages, stop_sequences=["```"])
     return chat_response
 
 
@@ -38,9 +44,11 @@ def run_test_case(test_case: dict[str, str], grader: Grader) -> dict:
     chat_response = run_prompt(test_case)
 
     model_grade = grader.grade_by_model(test_case, chat_response)
-    score = model_grade["score"]
+    model_score = model_grade["score"]
     reasoning = model_grade["reasoning"]
 
+    syntax_score = CodeGrader().grade_syntax(test_case, chat_response)
+    score = (model_score + syntax_score) / 2
     return {
         "output": chat_response,
         "test_case": test_case,
@@ -80,3 +88,6 @@ if __name__ == "__main__":
 
     eval_results = run_eval(dataset, grader)
     evaluation_mean_score = grader.calc_mean_scores(eval_results)
+
+    print(eval_results)
+    print(evaluation_mean_score)
