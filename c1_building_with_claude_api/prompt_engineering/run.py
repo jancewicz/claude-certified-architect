@@ -16,7 +16,7 @@ def run_prompt(prompt_inputs: dict):
     model: str = get_haiku_model()
 
     prompt = f"""
-    What should this person eat?
+    Generate one-day meal plan for an athletes that meets their goal and dietary restrictions.
     
     - Height: {prompt_inputs["height"]}
     - Weight: {prompt_inputs["weight"]}
@@ -32,28 +32,16 @@ def run_prompt(prompt_inputs: dict):
 if __name__ == "__main__":
     client: Anthropic = get_client()
     model: str = get_haiku_model()
-    evaluator = PromptEvaluator(client, model)
+    evaluator: PromptEvaluator = PromptEvaluator(client, model)
+    dataset_path: str = "meal_dataset.json"
 
-    dataset_path = "meal_dataset.json"
-    dataset = evaluator.generate_dataset(
-        task_description="Write concise 1 day meal plan for the athlete",
-        prompt_inputs_spec={
-            "height": "Athlete's height in cm",
-            "weight": "Athlete's weight in kg",
-            "goal": "Goal of the athlete",
-            "restrictions": "Dietary restrictions of the athlete",
-        },
-        output_file=dataset_path,
-        num_cases=3,
-    )
-
-    extra_criteria: str = """
+    evaluator_extra_criteria: str = """
     Make sure that output should include:
     * daily caloric total, 
     * macro nutrients breakdown, 
     * meals with exact food, portions and timing
     """
 
-    results = evaluator.run_evaluation(
-        run_prompt, dataset_file=dataset_path, extra_criteria=extra_criteria
+    results: list = evaluator.run_evaluation(
+        run_prompt, dataset_file=dataset_path, extra_criteria=evaluator_extra_criteria
     )
