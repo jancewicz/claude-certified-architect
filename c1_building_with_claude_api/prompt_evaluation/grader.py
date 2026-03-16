@@ -29,6 +29,9 @@ class Grader:
         <solution>
         {output}
         </solution>
+        
+        Criteria the task should fulfill:
+        {test_case["criteria"]}
 
         Output Format
         Provide your evaluation as a structured JSON object with the following fields, in this specific order:

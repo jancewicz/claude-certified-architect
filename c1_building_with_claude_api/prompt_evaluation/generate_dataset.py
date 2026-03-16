@@ -20,7 +20,8 @@ Example output:
 [
   {
     "task": "Description of task",
-    "format": "python", "regex" or "json"
+    "format": "python", "regex" or "json",
+    "criteria": "Explain what critical criteria should the task fulfill"
   },
   ...additional
 ]
