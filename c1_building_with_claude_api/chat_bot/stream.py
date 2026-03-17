@@ -3,7 +3,6 @@ from anthropic import Anthropic
 from c1_building_with_claude_api.get_client import get_client
 from c1_building_with_claude_api.utils.utils import (
     add_user_message,
-    chat,
     get_haiku_model,
 )
 
@@ -12,7 +11,7 @@ if __name__ == "__main__":
 
     messages = []
     user_message = "Tell me a brief history of siamese neural network"
-    add_user_message(messages=messages, text=user_message)
+    add_user_message(messages=messages, message=user_message)
 
     with client.messages.stream(
         model=get_haiku_model(), max_tokens=500, messages=messages

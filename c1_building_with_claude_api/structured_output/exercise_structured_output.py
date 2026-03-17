@@ -33,7 +33,7 @@ if __name__ == "__main__":
     add_user_message(messages, prompt)
     add_assistant_message(
         messages,
-        text="Sure! There are three AWS CLI commands in singular block: ```bash",
+        message="Sure! There are three AWS CLI commands in singular block: ```bash",
     )
     text = chat(
         client=get_client(),
@@ -41,4 +41,4 @@ if __name__ == "__main__":
         messages=messages,
         stop_sequences=["```"],
     )
-    print(text.strip())
+    print(text.content[0].text.strip())

@@ -28,12 +28,14 @@ def run_prompt(test_case: dict[str, str]):
         * Return only plain python code, regex, or json
         * Do not provide any explanation, commentary or comments
     """
-
     messages = []
     add_user_message(messages, prompt)
-    add_assistant_message(messages, text="```code")
+    add_assistant_message(messages, message="```code")
+
     chat_response = chat(client, model, messages, stop_sequences=["```"])
-    return chat_response
+    chat_response_text = chat_response.content[0].text
+
+    return chat_response_text
 
 
 def run_test_case(test_case: dict[str, str], grader: ModelGrader) -> dict:

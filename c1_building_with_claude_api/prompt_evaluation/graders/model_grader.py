@@ -54,8 +54,12 @@ class ModelGrader:
 
         messages = []
         add_user_message(messages, eval_prompt)
-        add_assistant_message(messages, text="```json")
-        eval_text = chat(self.client, self.model, messages, stop_sequences=["```"])
+        add_assistant_message(messages, message="```json")
+        eval_text = (
+            chat(self.client, self.model, messages, stop_sequences=["```"])
+            .content[0]
+            .text
+        )
         return json.loads(eval_text)
 
     @staticmethod

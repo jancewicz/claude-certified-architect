@@ -22,9 +22,9 @@ if __name__ == "__main__":
     text = "Generate a very short event bridge rule as json"
     add_user_message(messages, text)
     # Add ```json -> simulate start of JSON Markdown formatting
-    add_assistant_message(messages, text="```json")
+    add_assistant_message(messages, message="```json")
     # End when ``` occurs
     chat_response = chat(client, model, messages, stop_sequences=["```"])
 
     # Parse JSON
-    formatted_json_response = json.loads(chat_response.strip())
+    formatted_json_response = json.loads(chat_response.content[0].text.strip())

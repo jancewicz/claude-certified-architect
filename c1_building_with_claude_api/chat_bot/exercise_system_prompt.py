@@ -17,5 +17,5 @@ if __name__ == "__main__":
     user_prompt = (
         "Create a python function that checks if there is a duplicate char in string"
     )
-    add_user_message(messages, text=user_prompt)
+    add_user_message(messages, message=user_prompt)
     chat_response = chat(client, model, messages, system_prompt)

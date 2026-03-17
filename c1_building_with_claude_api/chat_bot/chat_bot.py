@@ -23,12 +23,13 @@ class ChatBot:
             if user_input.strip().lower() == "exit":
                 break
 
-            add_user_message(messages=self.messages, text=user_input)
+            add_user_message(messages=self.messages, message=user_input)
             chat_response = chat(
                 client=self.client,
                 model=self.model,
                 messages=self.messages,
                 system_prompt=self.system_prompt,
             )
-            print(f"> {chat_response}")
-            add_assistant_message(messages=self.messages, text=chat_response)
+            text_response = chat_response.content[0].text
+            print(f"> {text_response}")
+            add_assistant_message(messages=self.messages, message=chat_response)

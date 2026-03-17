@@ -34,14 +34,14 @@ Please generate 3 objects.
 """
     messages = []
     add_user_message(messages, prompt)
-    add_assistant_message(messages, text="```json")
+    add_assistant_message(messages, message="```json")
     text = chat(
         client=get_client(),
         model=get_haiku_model(),
         messages=messages,
         stop_sequences=["```"],
     )
-    return json.loads(text.strip())
+    return json.loads(text.content[0].text.strip())
 
 
 if __name__ == "__main__":

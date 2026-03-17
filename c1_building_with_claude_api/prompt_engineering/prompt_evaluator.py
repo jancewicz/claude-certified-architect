@@ -103,7 +103,7 @@ class PromptEvaluator:
             temperature=1.0,
         )
 
-        return json.loads(text)
+        return json.loads(text.content[0].text)
 
     def generate_test_case(self, task_description, idea, prompt_inputs_spec={}):
         """Generate a single test case based on the task description and a specific idea"""
@@ -206,7 +206,7 @@ class PromptEvaluator:
             temperature=0.7,
         )
 
-        test_case = json.loads(text)
+        test_case = json.loads(text.content[0].text)
         test_case["task_description"] = task_description
         test_case["scenario"] = idea
 
@@ -359,7 +359,7 @@ class PromptEvaluator:
             stop_sequences=["```"],
             temperature=0.0,
         )
-        return json.loads(eval_text)
+        return json.loads(eval_text.content[0].text)
 
     def run_test_case(self, test_case, run_prompt_function, extra_criteria=None):
         """Run a test case and grade the result"""
