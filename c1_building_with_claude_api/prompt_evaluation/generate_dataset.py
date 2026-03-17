@@ -6,6 +6,7 @@ from c1_building_with_claude_api.utils.utils import (
     add_assistant_message,
     chat,
     get_haiku_model,
+    text_from_message,
 )
 
 
@@ -35,13 +36,14 @@ Please generate 3 objects.
     messages = []
     add_user_message(messages, prompt)
     add_assistant_message(messages, message="```json")
-    text = chat(
+    message = chat(
         client=get_client(),
         model=get_haiku_model(),
         messages=messages,
         stop_sequences=["```"],
     )
-    return json.loads(text.content[0].text.strip())
+    text = text_from_message(message)
+    return json.loads(text.strip())
 
 
 if __name__ == "__main__":

@@ -1,7 +1,11 @@
 from anthropic import Anthropic
 
 from c1_building_with_claude_api.get_client import get_client
-from c1_building_with_claude_api.utils.utils import chat, add_user_message
+from c1_building_with_claude_api.utils.utils import (
+    chat,
+    add_user_message,
+    text_from_message,
+)
 
 # Create as concise response from LLM as it can get. Ask for python function that checks duplicates chars in str
 if __name__ == "__main__":

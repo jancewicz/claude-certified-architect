@@ -46,3 +46,7 @@ def chat(
 
     message = client.messages.create(**chat_params)
     return message
+
+
+def text_from_message(message: Message) -> str:
+    return "\n".join([block.text for block in message.content if block.type == "text"])

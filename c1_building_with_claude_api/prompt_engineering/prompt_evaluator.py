@@ -13,6 +13,7 @@ from c1_building_with_claude_api.utils.utils import (
     add_user_message,
     add_assistant_message,
     chat,
+    text_from_message,
 )
 
 
@@ -103,7 +104,7 @@ class PromptEvaluator:
             temperature=1.0,
         )
 
-        return json.loads(text.content[0].text)
+        return json.loads(text_from_message(text))
 
     def generate_test_case(self, task_description, idea, prompt_inputs_spec={}):
         """Generate a single test case based on the task description and a specific idea"""
@@ -197,7 +198,7 @@ class PromptEvaluator:
         messages = []
         add_user_message(messages, rendered_prompt)
         add_assistant_message(messages, "```json")
-        text = chat(
+        message = chat(
             self.client,
             self.model,
             messages,
@@ -205,8 +206,9 @@ class PromptEvaluator:
             system_prompt=system_prompt,
             temperature=0.7,
         )
+        text = text_from_message(message)
 
-        test_case = json.loads(text.content[0].text)
+        test_case = json.loads(text)
         test_case["task_description"] = task_description
         test_case["scenario"] = idea
 
@@ -352,14 +354,15 @@ class PromptEvaluator:
         messages = []
         add_user_message(messages, eval_prompt)
         add_assistant_message(messages, "```json")
-        eval_text = chat(
+        message = chat(
             self.client,
             self.model,
             messages,
             stop_sequences=["```"],
             temperature=0.0,
         )
-        return json.loads(eval_text.content[0].text)
+        eval_text = text_from_message(message)
+        return json.loads(eval_text)
 
     def run_test_case(self, test_case, run_prompt_function, extra_criteria=None):
         """Run a test case and grade the result"""

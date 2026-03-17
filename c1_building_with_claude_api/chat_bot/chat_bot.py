@@ -4,6 +4,7 @@ from c1_building_with_claude_api.utils.utils import (
     add_user_message,
     add_assistant_message,
     chat,
+    text_from_message,
 )
 
 
@@ -30,6 +31,6 @@ class ChatBot:
                 messages=self.messages,
                 system_prompt=self.system_prompt,
             )
-            text_response = chat_response.content[0].text
+            text_response = text_from_message(chat_response)
             print(f"> {text_response}")
             add_assistant_message(messages=self.messages, message=chat_response)

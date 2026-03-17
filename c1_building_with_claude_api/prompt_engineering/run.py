@@ -8,6 +8,7 @@ from c1_building_with_claude_api.utils.utils import (
     get_haiku_model,
     add_user_message,
     chat,
+    text_from_message,
 )
 
 
@@ -178,7 +179,8 @@ def run_prompt(prompt_inputs: dict):
 
     messages = []
     add_user_message(messages, prompt)
-    return chat(client, model, messages)
+    message = chat(client, model, messages)
+    return text_from_message(message)
 
 
 if __name__ == "__main__":

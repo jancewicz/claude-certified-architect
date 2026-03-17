@@ -6,6 +6,7 @@ from c1_building_with_claude_api.utils.utils import (
     add_user_message,
     chat,
     add_assistant_message,
+    text_from_message,
 )
 
 if __name__ == "__main__":
@@ -24,7 +25,8 @@ if __name__ == "__main__":
     # Add ```json -> simulate start of JSON Markdown formatting
     add_assistant_message(messages, message="```json")
     # End when ``` occurs
-    chat_response = chat(client, model, messages, stop_sequences=["```"])
+    message = chat(client, model, messages, stop_sequences=["```"])
+    chat_response = text_from_message(message)
 
     # Parse JSON
-    formatted_json_response = json.loads(chat_response.content[0].text.strip())
+    formatted_json_response = json.loads(chat_response.strip())
