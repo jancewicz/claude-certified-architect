@@ -2,6 +2,9 @@ import json
 
 from anthropic.types import Message, ToolParam
 
+from c1_building_with_claude_api.tools.text_editor_tool.schema.text_edit_schema import (
+    get_text_schema,
+)
 from c1_building_with_claude_api.tools.text_editor_tool.text_editor_tool import (
     TextEditorTool,
 )
@@ -13,18 +16,23 @@ from c1_building_with_claude_api.tools.basic_tools_usage.tools_and_schemas impor
     set_reminder,
     add_duration_to_datetime,
 )
+from c1_building_with_claude_api.utils.utils import get_haiku_model
 
 
 class ToolRunner:
     TOOL_USE: str = "tool_use"
+    model = get_haiku_model()
     tools: list[ToolParam] = [
         get_current_datetime_schema,
         add_duration_to_datetime_schema,
         set_reminder_schema,
+        get_text_schema(model),
     ]
 
-    @staticmethod
-    def run_tool(tool_name: str, tool_input):
+    def __init__(self):
+        self.editor = TextEditorTool()
+
+    def run_tool(self, tool_name: str, tool_input):
         match tool_name:
             case "get_current_datetime":
                 return get_current_datetime(**tool_input)
@@ -32,8 +40,8 @@ class ToolRunner:
                 return add_duration_to_datetime(**tool_input)
             case "set_reminder":
                 return set_reminder(**tool_input)
-            case "str_replace_editor":
-                return handle_text_editor_tool(**tool_input)
+            case "str_replace_based_edit_tool":
+                return self._run_editor_tool(tool_input)
         return None
 
     def run_tools(self, message: Message):
@@ -61,26 +69,22 @@ class ToolRunner:
             tool_result_blocks.append(tool_result_block)
         return tool_result_blocks
 
+    def _run_editor_tool(self, tool_input: dict) -> str:
+        command = tool_input.get("command")
+        path = tool_input.get("path", "")
 
-def handle_text_editor_tool(tool_input):
-    text_editor_tool: TextEditorTool = TextEditorTool()
-
-    command = tool_input["command"]
-    if command == "view":
-        return text_editor_tool.view(tool_input["path"], tool_input.get("view_range"))
-    elif command == "str_replace":
-        return text_editor_tool.str_replace(
-            tool_input["path"], tool_input["old_str"], tool_input["new_str"]
-        )
-    elif command == "create":
-        return text_editor_tool.create(tool_input["path"], tool_input["file_text"])
-    elif command == "insert":
-        return text_editor_tool.insert(
-            tool_input["path"],
-            tool_input["insert_line"],
-            tool_input["new_str"],
-        )
-    elif command == "undo_edit":
-        return text_editor_tool.undo_edit(tool_input["path"])
-    else:
-        raise Exception(f"Unknown text editor command: {command}")
+        match command:
+            case "view":
+                return self.editor.view(path, tool_input.get("view_range"))
+            case "str_replace":
+                return self.editor.str_replace(
+                    path, tool_input["old_str"], tool_input["new_str"]
+                )
+            case "create":
+                return self.editor.create(path, tool_input["file_text"])
+            case "insert":
+                return self.editor.insert(
+                    path, tool_input["insert_line"], tool_input["new_str"]
+                )
+            case _:
+                raise ValueError(f"Unknown editor command: {command}")
