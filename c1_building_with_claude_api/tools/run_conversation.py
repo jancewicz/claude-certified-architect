@@ -1,10 +1,7 @@
 from anthropic import Anthropic
 from anthropic.types import MessageParam
 
-from c1_building_with_claude_api.tool_calling.run_tools import ToolRunner
-from c1_building_with_claude_api.tool_calling.tools_and_schemas import (
-    get_current_datetime,
-)
+from c1_building_with_claude_api.tools.tool_runner import ToolRunner
 from c1_building_with_claude_api.utils.utils import (
     chat,
     add_assistant_message,
