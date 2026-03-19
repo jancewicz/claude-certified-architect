@@ -13,6 +13,6 @@ if __name__ == "__main__":
     messages = []
     add_user_message(
         messages,
-        message="What is the current time in HH:MM format? Also, what is the current time in SS format?",
+        message="Set the reminder for my Claude certification exam. Its 130 days after January 1st, 2026.",
     )
     run_conversation(client, model, messages, tool_runner)

@@ -17,7 +17,7 @@ def run_conversation(
     client: Anthropic, model: str, messages: list[MessageParam], tool_runner: ToolRunner
 ):
     while True:
-        response = chat(client, model, messages, tools=[get_current_datetime()])
+        response = chat(client, model, messages, tools=tool_runner.tools)
         add_assistant_message(messages, response)
         print(text_from_message(message=response))
 
