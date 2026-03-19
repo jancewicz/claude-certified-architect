@@ -2,7 +2,10 @@ import json
 
 from anthropic.types import Message, ToolParam
 
-from c1_building_with_claude_api.tools.text_editor_tool.schema.text_edit_schema import (
+from c1_building_with_claude_api.tools.web_search_tool.web_search_schema import (
+    get_web_search_schema,
+)
+from c1_building_with_claude_api.tools.text_editor_tool.text_edit_schema import (
     get_text_schema,
 )
 from c1_building_with_claude_api.tools.text_editor_tool.text_editor_tool import (
@@ -21,16 +24,17 @@ from c1_building_with_claude_api.utils.utils import get_haiku_model
 
 class ToolRunner:
     TOOL_USE: str = "tool_use"
-    model = get_haiku_model()
-    tools: list[ToolParam] = [
-        get_current_datetime_schema,
-        add_duration_to_datetime_schema,
-        set_reminder_schema,
-        get_text_schema(model),
-    ]
 
     def __init__(self):
         self.editor = TextEditorTool()
+        self.model = get_haiku_model()
+        self.tools: list[ToolParam] = [
+            get_current_datetime_schema,
+            add_duration_to_datetime_schema,
+            set_reminder_schema,
+            get_text_schema(self.model),
+            get_web_search_schema(self.model),
+        ]
 
     def run_tool(self, tool_name: str, tool_input):
         match tool_name:
@@ -42,6 +46,8 @@ class ToolRunner:
                 return set_reminder(**tool_input)
             case "str_replace_based_edit_tool":
                 return self._run_editor_tool(tool_input)
+            case "web_search":
+                return get_web_search_schema(self.model)
         return None
 
     def run_tools(self, message: Message):

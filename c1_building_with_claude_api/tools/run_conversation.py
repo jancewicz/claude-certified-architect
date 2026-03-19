@@ -16,6 +16,7 @@ def run_conversation(
     while True:
         response = chat(client, model, messages, tools=tool_runner.tools)
         add_assistant_message(messages, response)
+        print(response)
         print(text_from_message(message=response))
 
         if response.stop_reason != tool_runner.TOOL_USE:
